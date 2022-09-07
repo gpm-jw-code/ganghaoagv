@@ -27,6 +27,20 @@ namespace GangHaoAGV.API
             return response;
         }
 
+
+        /// <summary>
+        /// 終止指定車子的當前任務
+        /// </summary>
+        /// <param name="agvName"></param>
+        /// <param name="getNewOrderable"></param>
+        /// <returns></returns>
+        public async Task<ResponseBaseWithStringCreateOn> TerminateAGVCurrentOrder(string agvName, bool getNewOrderable = true)
+        {
+            string json = await HttpPost("terminate", new TerminateVehiclesCurrentTask(new List<string> { agvName }, getNewOrderable, false));
+            ResponseBaseWithStringCreateOn response = JsonConvert.DeserializeObject<ResponseBaseWithStringCreateOn>(json);
+            return response;
+        }
+
         /// <summary>
         /// 查詢訂單狀態
         /// </summary>

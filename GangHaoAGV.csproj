@@ -93,6 +93,7 @@
     <Compile Include="Models\Order\OrderDetails.cs" />
     <Compile Include="Models\Order\ResponseBase.cs" />
     <Compile Include="Models\Order\SetOrder.cs" />
+    <Compile Include="Models\Order\Terminate.cs" />
     <Compile Include="Models\StateModels\Requests\infoReq.cs" />
     <Compile Include="Models\StateModels\Responses\ResModelBase.cs" />
     <Compile Include="Models\StateModels\Responses\robotStatusPathRes_11010.cs" />

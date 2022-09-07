@@ -19,4 +19,10 @@ namespace GangHaoAGV.Models.Order
         public int create_on { get; set; }
         public string msg { get; set; }
     }
+
+    public class ResponseBaseWithStringCreateOn : ResponseBase
+    {
+
+        public new string create_on { get; set; }
+    }
 }
