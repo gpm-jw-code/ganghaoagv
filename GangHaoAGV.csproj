@@ -9,11 +9,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GangHaoAGV</RootNamespace>
     <AssemblyName>GangHaoAGV</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -75,7 +76,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AGV\clsAGV.cs" />
+    <Compile Include="AGV\clsControl.cs" />
     <Compile Include="AGV\clsSTATES.cs" />
+    <Compile Include="AGV\ITcpHandshakeAble.cs" />
     <Compile Include="API\APIBase.cs" />
     <Compile Include="API\Enums.cs" />
     <Compile Include="API\RobotControlAPI.cs" />
@@ -87,6 +90,8 @@
     <Compile Include="Communiation\agvTcpClient.cs" />
     <Compile Include="Communiation\clsSocketState.cs" />
     <Compile Include="Models\AGVModels\ConectionModel.cs" />
+    <Compile Include="Models\ControlModels\Responses\robotControlConfirmlocRes_12003.cs" />
+    <Compile Include="Models\ControlModels\Responses\robotControlRelocRes_12002.cs" />
     <Compile Include="Models\ModelBase.cs" />
     <Compile Include="Models\Order\Block.cs" />
     <Compile Include="Models\Order\OperationArgs.cs" />
@@ -95,11 +100,12 @@
     <Compile Include="Models\Order\SetOrder.cs" />
     <Compile Include="Models\Order\Terminate.cs" />
     <Compile Include="Models\StateModels\Requests\infoReq.cs" />
-    <Compile Include="Models\StateModels\Responses\ResModelBase.cs" />
+    <Compile Include="Models\ResModelBase.cs" />
     <Compile Include="Models\StateModels\Responses\robotStatusPathRes_11010.cs" />
     <Compile Include="Models\StateModels\Responses\robotStatusLaserRes_11009.cs" />
     <Compile Include="Models\StateModels\Responses\robotStatusBatteryRes_11007.cs" />
     <Compile Include="Models\StateModels\Responses\robotStatusBlockRes_11006.cs" />
+    <Compile Include="Models\StateModels\Responses\robotStatusRelocRes_11021.cs" />
     <Compile Include="Models\StateModels\Responses\robotStatusTaskStatusPackageRes_11110.cs" />
     <Compile Include="Models\StateModels\Responses\robotStatusSpeedRes_11005.cs" />
     <Compile Include="Models\StateModels\Responses\robotStatusLocRes_11004.cs" />
@@ -109,7 +115,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\ControlModels\" />
+    <Folder Include="Models\ControlModels\Requests\" />
     <Folder Include="Models\MapModels\" />
   </ItemGroup>
   <ItemGroup>

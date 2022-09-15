@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GangHaoAGV.Communiation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,9 @@ namespace GangHaoAGV.API
 {
     public class RobotMapAPI : APIBase
     {
-        public RobotMapAPI(Enums.API_TYPE apiType) : base(apiType)
+        public RobotMapAPI(agvTcpClient agvTcpClient) : base(agvTcpClient)
         {
-
+            apiType = Enums.API_TYPE.ROBOT_MAP;
         }
     }
 }

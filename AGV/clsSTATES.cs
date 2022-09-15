@@ -7,32 +7,36 @@ namespace GangHaoAGV.AGV
     /// <summary>
     /// 這是狀態
     /// </summary>
-    public class clsSTATES
+    public class clsSTATES : ITcpHandshakeAble
     {
         public API.RobotStateAPI API;
-        public Communiation.agvTcpClient _conn;
+        public Communiation.agvTcpClient conn { get; set; }
         private bool reconnectingFlag = false;
         internal event EventHandler OnConnected;
         internal event EventHandler OnDisConnected;
         public clsSTATES(Communiation.agvTcpClient conn)
         {
-            _conn = conn;
-            _conn.OnDisconnect += _conn_OnDisconnect;
+            this.conn = conn;
+            this.conn.OnDisconnect += _conn_OnDisconnect;
             API = new API.RobotStateAPI(conn);
             StateFetchWork();
-            if (!_conn.connected)
+            if (!this.conn.connected)
                 ReconnectWork();
         }
         public Models.StateModels.Responses.robotStatusInfoRes_11000 statinfo { get; private set; } = new Models.StateModels.Responses.robotStatusInfoRes_11000();
         public Models.StateModels.Responses.robotStatusBatteryRes_11007 betteryState { get; private set; } = new Models.StateModels.Responses.robotStatusBatteryRes_11007();
         public Models.StateModels.Responses.robotStatusTaskStatusPackageRes_11110 taskStatusPakage { get; private set; } = new Models.StateModels.Responses.robotStatusTaskStatusPackageRes_11110();
         public Models.StateModels.Responses.robotStatusLocRes_11004 locationInfo { get; private set; } = new Models.StateModels.Responses.robotStatusLocRes_11004();
+        /// <summary>
+        /// 重定位狀態
+        /// </summary>
+        public Models.StateModels.Responses.robotStatusRelocRes_11021 relocState { get; private set; } = new Models.StateModels.Responses.robotStatusRelocRes_11021();
         private async Task StateFetchWork()
         {
             while (true)
             {
                 await Task.Delay(100);
-                if (!_conn.connected)
+                if (!conn.connected)
                     continue;
                 try
                 {
@@ -43,7 +47,7 @@ namespace GangHaoAGV.AGV
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("StateFetchWork {0}:{1} {2}", _conn.host, _conn.port, ex.Message);
+                    Console.WriteLine("StateFetchWork {0}:{1} {2}", conn.host, conn.port, ex.Message);
                     return;
                 }
             }
@@ -59,10 +63,10 @@ namespace GangHaoAGV.AGV
 
         private async Task ReconnectWork()
         {
-            while (!_conn.TryConnect(out string err_msg))
+            while (!conn.TryConnect(out string err_msg))
             {
                 reconnectingFlag = true;
-                Console.WriteLine("ReconnectWork {0}:{1} {2}", _conn.host, _conn.port, err_msg);
+                Console.WriteLine("ReconnectWork {0}:{1} {2}", conn.host, conn.port, err_msg);
                 Thread.Sleep(TimeSpan.FromSeconds(1));
             }
             OnConnected?.Invoke(this, EventArgs.Empty);

@@ -14,45 +14,12 @@ namespace GangHaoAGV.API
     public class RobotStateAPI : APIBase
     {
 
-        public RobotStateAPI(Enums.API_TYPE apiType) : base(apiType)
+        public RobotStateAPI(agvTcpClient agvTcpClient) : base(agvTcpClient)
         {
-
+            apiType = Enums.API_TYPE.ROBOT_STATE;
         }
 
-        public RobotStateAPI(agvTcpClient agvTcpClient)
-        {
-            _agvTcpClient = agvTcpClient;
-        }
 
-        /// <summary>
-        /// 生成狀態API指令報文
-        /// </summary>
-        /// <param name="cmdNo">序號</param>
-        /// <param name="modelno">報文類型 (編號)</param>
-        /// <returns></returns>
-        public byte[] CreateAPICmdBytes(ushort cmdNo, ushort modelno)
-        {
-            byte[] noBytes = BitConverter.GetBytes(cmdNo); //序號
-            byte[] type = BitConverter.GetBytes(modelno);
-            byte[] output = new byte[16];
-            output[0] = 0x5A;
-            output[1] = 0x01;
-            output[2] = noBytes[1];
-            output[3] = noBytes[0];
-            output[4] = 0;
-            output[5] = 0;
-            output[6] = 0;
-            output[7] = 0;
-            output[8] = type[1];
-            output[9] = type[0];
-            output[10] = 0;
-            output[11] = 0;
-            output[12] = 0;
-            output[13] = 0;
-            output[14] = 0;
-            output[15] = 0;
-            return output;
-        }
 
         public async Task<robotStatusInfoRes_11000> GetRobotStatusInfo()
         {
@@ -131,6 +98,19 @@ namespace GangHaoAGV.API
             if (!revState.isReviced)
                 return new robotStatusTaskStatusPackageRes_11110() { acturallyRecieved = false };
             return JsonConvert.DeserializeObject<robotStatusTaskStatusPackageRes_11110>(revState.dataJson);
+        }
+
+
+        /// <summary>
+        /// 取得目前重定位的狀態
+        /// </summary>
+        /// <returns></returns>
+        public async Task<robotStatusRelocRes_11021> GetRelocState()
+        {
+            agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, 1021));
+            if (!revState.isReviced)
+                return new robotStatusRelocRes_11021() { acturallyRecieved = false };
+            return JsonConvert.DeserializeObject<robotStatusRelocRes_11021>(revState.dataJson);
         }
     }
 }

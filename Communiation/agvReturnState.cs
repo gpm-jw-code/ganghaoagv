@@ -22,7 +22,16 @@ namespace GangHaoAGV.Communiation
             {
                 if (isReviced)
                 {
-                    return Encoding.ASCII.GetString(agvReturnDatBytes, 16, dataLen);
+                    try
+                    {
+
+                        return Encoding.ASCII.GetString(agvReturnDatBytes, 16, dataLen);
+                    }
+                    catch (Exception ex)
+                    {
+
+                        throw ex;
+                    }
                 }
                 else
                     return "";

@@ -25,6 +25,7 @@ namespace GangHaoAGV.AGV
         public bool MapPortConnected { get; private set; } = false;
 
         public clsSTATES STATES { get; set; }
+        public clsControl CONTROL { get; set; }
 
         public cAGV()
         {
@@ -53,6 +54,8 @@ namespace GangHaoAGV.AGV
                 STATES = new clsSTATES(stateConnection);
                 STATES.OnConnected += STATES_OnConnected;
                 STATES.OnDisConnected += STATES_OnDisConnected;
+
+                CONTROL = new clsControl(controlConnection, STATES.API);
             });
         }
 

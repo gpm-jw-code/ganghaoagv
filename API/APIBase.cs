@@ -11,7 +11,7 @@ namespace GangHaoAGV.API
 {
     public class APIBase
     {
-        public readonly Enums.API_TYPE apiType;
+        protected Enums.API_TYPE apiType;
 
         protected agvTcpClient _agvTcpClient { get; set; }
         public string ConnectionErrorMessage { get; private set; }
@@ -19,12 +19,12 @@ namespace GangHaoAGV.API
         {
 
         }
-        public APIBase(Enums.API_TYPE apiType)
+        public APIBase(agvTcpClient agvTcpClient)
         {
-            this.apiType = apiType;
+            this._agvTcpClient = agvTcpClient;
         }
         /// <summary>
-        /// 生成API報文(帶數據)
+        /// 生成狀態API指令報文(帶資料)
         /// </summary>
         /// <param name="cmdNo">序號</param>
         /// <param name="data">數據模型,內含報文類型編號</param>
@@ -56,6 +56,36 @@ namespace GangHaoAGV.API
             output[14] = 0;
             output[15] = 0;
             Array.Copy(dataBytes, 0, output, 16, datalengLint);
+            return output;
+        }
+
+        /// <summary>
+        /// 生成狀態API指令報文(不帶資料)
+        /// </summary>
+        /// <param name="cmdNo">序號</param>
+        /// <param name="modelno">報文類型 (編號)</param>
+        /// <returns></returns>
+        public byte[] CreateAPICmdBytes(ushort cmdNo, ushort modelno)
+        {
+            byte[] noBytes = BitConverter.GetBytes(cmdNo); //序號
+            byte[] type = BitConverter.GetBytes(modelno);
+            byte[] output = new byte[16];
+            output[0] = 0x5A;
+            output[1] = 0x01;
+            output[2] = noBytes[1];
+            output[3] = noBytes[0];
+            output[4] = 0;
+            output[5] = 0;
+            output[6] = 0;
+            output[7] = 0;
+            output[8] = type[1];
+            output[9] = type[0];
+            output[10] = 0;
+            output[11] = 0;
+            output[12] = 0;
+            output[13] = 0;
+            output[14] = 0;
+            output[15] = 0;
             return output;
         }
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GangHaoAGV.Models.StateModels.Responses
+namespace GangHaoAGV.Models
 {
     public class ResModelBase : ModelBase
     {
