@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace GangHaoAGV.Models.StateModels.Responses
 {
+    /// <summary>
+    /// robot_status_path_res
+    /// </summary>
     public class robotStatusPathRes_11010 : ResModelBase
     {
-        public double x { get; set; } = 1;
-        public double y { get; set; } = 2;
-        public double z { get; set; } = 3;
+        public List<double[]> path { get; set; }
     }
 }

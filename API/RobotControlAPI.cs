@@ -23,7 +23,7 @@ namespace GangHaoAGV.API
         /// <returns></returns>
         public async Task<robotControlRelocRes_12002> ReLoc()
         {
-            agvReturnState ret = await APIExcute(CreateAPICmdBytes(1, 2002));
+            agvReturnState ret = await APIExcute(CreateAPICmdBytes(1, 2002), useNewConnection: true);
             if (!ret.isReviced)
                 return new robotControlRelocRes_12002() { acturallyRecieved = false };
             return JsonConvert.DeserializeObject<robotControlRelocRes_12002>(ret.dataJson);
@@ -35,7 +35,7 @@ namespace GangHaoAGV.API
         /// <returns></returns>
         public async Task<robotControlConfirmlocRes_12003> ConfirmLoc()
         {
-            agvReturnState ret = await APIExcute(CreateAPICmdBytes(1, 2003));
+            agvReturnState ret = await APIExcute(CreateAPICmdBytes(1, 2003), useNewConnection: true);
             if (!ret.isReviced)
                 return new robotControlConfirmlocRes_12003() { acturallyRecieved = false };
             return JsonConvert.DeserializeObject<robotControlConfirmlocRes_12003>(ret.dataJson);

@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using static GangHaoAGV.Models.StateModels.Responses.robotStatusStationRes_11301;
 
 namespace GangHaoAGV.AGV
 {
@@ -14,12 +17,16 @@ namespace GangHaoAGV.AGV
         private bool reconnectingFlag = false;
         internal event EventHandler OnConnected;
         internal event EventHandler OnDisConnected;
-        public clsSTATES(Communiation.agvTcpClient conn)
+        public clsSTATES(Communiation.agvTcpClient conn, bool autoFetchStateData)
         {
             this.conn = conn;
             this.conn.OnDisconnect += _conn_OnDisconnect;
+
             API = new API.RobotStateAPI(conn);
-            StateFetchWork();
+
+            if (autoFetchStateData)
+                StateFetchWork();
+
             if (!this.conn.connected)
                 ReconnectWork();
         }
@@ -31,19 +38,25 @@ namespace GangHaoAGV.AGV
         /// 重定位狀態
         /// </summary>
         public Models.StateModels.Responses.robotStatusRelocRes_11021 relocState { get; private set; } = new Models.StateModels.Responses.robotStatusRelocRes_11021();
+
+
+
         private async Task StateFetchWork()
         {
             while (true)
             {
-                await Task.Delay(100);
                 if (!conn.connected)
                     continue;
                 try
                 {
                     statinfo = await API.GetRobotStatusInfo();
+                    await Task.Delay(150);
                     betteryState = await API.GetRobotBattery();
+                    await Task.Delay(150);
                     taskStatusPakage = await API.GetTaskStatusPackage();
+                    await Task.Delay(150);
                     locationInfo = await API.GetRobotLocation();
+                    await Task.Delay(150);
                 }
                 catch (Exception ex)
                 {
@@ -59,6 +72,24 @@ namespace GangHaoAGV.AGV
         public void Download()
         {
 
+        }
+
+        public List<string> GetMapNames()
+        {
+            var mapRes = API.GetRobotMaps().Result;
+            return mapRes.maps.ToList();
+        }
+
+        /// <summary>
+        /// 取得當前載入的地圖名稱以及站點資訊
+        /// </summary>
+        /// <returns>KeyValuePair<string, Station[]></returns>
+        public async Task<KeyValuePair<string, Station[]>> GetRobotCurrentStations()
+        {
+            var mapRes = await API.GetRobotMaps();
+            var currentMap = mapRes.current_map;
+            var res = await API.GetRobotStations();
+            return new KeyValuePair<string, Station[]>(currentMap, res.stations);
         }
 
         private async Task ReconnectWork()

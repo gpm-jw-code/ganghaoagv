@@ -77,14 +77,15 @@
   <ItemGroup>
     <Compile Include="AGV\clsAGV.cs" />
     <Compile Include="AGV\clsControl.cs" />
+    <Compile Include="AGV\clsMap.cs" />
     <Compile Include="AGV\clsSTATES.cs" />
+    <Compile Include="AGV\IStateFetchAble.cs" />
     <Compile Include="AGV\ITcpHandshakeAble.cs" />
     <Compile Include="API\APIBase.cs" />
     <Compile Include="API\Enums.cs" />
     <Compile Include="API\RobotControlAPI.cs" />
     <Compile Include="API\RobotMapAPI.cs" />
     <Compile Include="API\RobotStateAPI.cs" />
-    <Compile Include="API\ServerAPI.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="Communiation\agvReturnState.cs" />
     <Compile Include="Communiation\agvTcpClient.cs" />
@@ -92,19 +93,26 @@
     <Compile Include="Models\AGVModels\ConectionModel.cs" />
     <Compile Include="Models\ControlModels\Responses\robotControlConfirmlocRes_12003.cs" />
     <Compile Include="Models\ControlModels\Responses\robotControlRelocRes_12002.cs" />
+    <Compile Include="Models\MapModels\Requests\robotMapTargetPathReq_3053.cs" />
+    <Compile Include="Models\MapModels\Requests\robotMapTaskGoTargetListReq_3066.cs" />
+    <Compile Include="Models\MapModels\Requests\robotMapTaskGoTargetReq_3051_HighLevel.cs" />
+    <Compile Include="Models\MapModels\Requests\robotMapTaskGoTargetReq_3051.cs" />
+    <Compile Include="Models\MapModels\Responses\robotMapTargetPathRes_13053.cs" />
+    <Compile Include="Models\MapModels\Responses\robotMapTaskGoTargetRes_13003.cs" />
+    <Compile Include="Models\MapModels\Responses\robotMapTaskGoTargetListRes_13066.cs" />
+    <Compile Include="Models\MapModels\Responses\robotMapTaskGoTargetRes_13051.cs" />
     <Compile Include="Models\ModelBase.cs" />
-    <Compile Include="Models\Order\Block.cs" />
-    <Compile Include="Models\Order\OperationArgs.cs" />
-    <Compile Include="Models\Order\OrderDetails.cs" />
-    <Compile Include="Models\Order\ResponseBase.cs" />
-    <Compile Include="Models\Order\SetOrder.cs" />
-    <Compile Include="Models\Order\Terminate.cs" />
     <Compile Include="Models\StateModels\Requests\infoReq.cs" />
     <Compile Include="Models\ResModelBase.cs" />
+    <Compile Include="Models\StateModels\Requests\robotStatusTaskStatusPackageReq_1110.cs" />
+    <Compile Include="Models\StateModels\Responses\robotStatusAlarmRes_11050.cs" />
+    <Compile Include="Models\StateModels\Responses\robotStatusStationRes_11301.cs" />
+    <Compile Include="Models\StateModels\Responses\robotStatusMapRes_11300.cs" />
     <Compile Include="Models\StateModels\Responses\robotStatusPathRes_11010.cs" />
     <Compile Include="Models\StateModels\Responses\robotStatusLaserRes_11009.cs" />
     <Compile Include="Models\StateModels\Responses\robotStatusBatteryRes_11007.cs" />
     <Compile Include="Models\StateModels\Responses\robotStatusBlockRes_11006.cs" />
+    <Compile Include="Models\StateModels\Responses\robotStatusTaskRes_11020.cs" />
     <Compile Include="Models\StateModels\Responses\robotStatusRelocRes_11021.cs" />
     <Compile Include="Models\StateModels\Responses\robotStatusTaskStatusPackageRes_11110.cs" />
     <Compile Include="Models\StateModels\Responses\robotStatusSpeedRes_11005.cs" />
@@ -116,7 +124,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\ControlModels\Requests\" />
-    <Folder Include="Models\MapModels\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

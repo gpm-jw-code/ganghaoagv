@@ -30,6 +30,7 @@ namespace GangHaoAGV.Communiation
             try
             {
                 tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                tcpSocket.ReceiveBufferSize = 163840;
                 tcpSocket.Connect(host, port);
                 connected = true;
                 return true;
@@ -42,39 +43,38 @@ namespace GangHaoAGV.Communiation
             }
         }
         private agvReturnState _agvReturnState = new agvReturnState();
-        internal async Task<agvReturnState> Send(byte[] apiContextBytes)
+        internal async Task<agvReturnState> Send(byte[] apiContextBytes, int cmdNoMark = -1)
         {
+            clsSocketState socketState = new clsSocketState(tcpSocket, 8192);
             try
             {
-                _agvReturnState = new agvReturnState();
-                clsSocketState socketState = new clsSocketState(tcpSocket, 8192);
                 waitRevDoneCTSK = new CancellationTokenSource();
-
                 tcpSocket.BeginReceive(socketState.buffer, 0, socketState.bufferSize, SocketFlags.None, new AsyncCallback(RecieveCallBackHandle), socketState);
                 tcpSocket.Send(apiContextBytes, apiContextBytes.Length, SocketFlags.None);
                 try
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(3), waitRevDoneCTSK.Token);
+                    await Task.Delay(TimeSpan.FromSeconds(15), waitRevDoneCTSK.Token);
                 }
                 catch (TaskCanceledException ex)
                 {
+
                 }
                 finally
                 {
                     if (!waitRevDoneCTSK.IsCancellationRequested)
                     {
-                        Console.WriteLine("{0}:{1}-Timeout了", host, port);
+                        Console.WriteLine("{0}:{1}:{2}-Timeout了", host, port, cmdNoMark == -1 ? "-" : cmdNoMark.ToString());
                     }
                 }
-                return _agvReturnState;
+                return socketState.dataState;
             }
             catch (SocketException ex)
             {
                 OnDisconnect?.Invoke(this, null);
                 connected = false;
-                _agvReturnState.disconnected = true;
+                socketState.dataState.disconnected = true;
                 Console.WriteLine("{0}:{1}-{2}", host, port, ex.Message);
-                return _agvReturnState;
+                return socketState.dataState;
             }
         }
 
@@ -94,10 +94,14 @@ namespace GangHaoAGV.Communiation
                     int dataLen = BitConverter.ToInt32(dataLenBytes.Reverse().ToArray(), 0);
                     //所以總封包長度
                     int totalLen = 16 + dataLen;
+                    if (totalLen != recieveLen)
+                    {
+
+                    }
                     byte[] RevBytes = new byte[totalLen];
                     Array.Copy(state.buffer, 0, RevBytes, 0, totalLen);
-                    _agvReturnState.agvReturnDatBytes = RevBytes;
-                    _agvReturnState.dataLen = dataLen;
+                    state.dataState.agvReturnDatBytes = RevBytes;
+                    state.dataState.dataLen = dataLen;
                     waitRevDoneCTSK.Cancel();
                 }
             }
@@ -108,6 +112,26 @@ namespace GangHaoAGV.Communiation
                 waitRevDoneCTSK.Cancel();
                 Console.WriteLine("{0}:{1}-{2}", host, port, ex.Message);
 
+            }
+            catch (Exception ex)
+            {
+                OnDisconnect?.Invoke(this, null);
+                _agvReturnState.disconnected = true;
+                waitRevDoneCTSK.Cancel();
+                Console.WriteLine("{0}:{1}-{2}", host, port, ex.Message);
+            }
+        }
+
+        internal void Close()
+        {
+            try
+            {
+                tcpSocket.Shutdown(SocketShutdown.Both);
+                tcpSocket.Close();
+                tcpSocket.Dispose();
+            }
+            catch (Exception ex)
+            {
             }
         }
     }

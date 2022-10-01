@@ -11,10 +11,23 @@ namespace GangHaoAGV.Models.StateModels.Responses
     /// </summary>
     public class robotStatusRelocRes_11021 : ResModelBase
     {
+        /// <summary>
+        /// 0 = FAILED(定位失敗), 
+        /// 1 = SUCCESS(定位正確),
+        /// 2 = RELOCING(正在重定位), 
+        /// 3 = COMPLETED(定位完成
+        /// </summary>
         public enum RELOC_STATE
         {
-            COMPLETED, SUCCESS, RUNNING
+            FAILED, SUCCESS, RELOCING, COMPLETED
         }
-        public RELOC_STATE state { get; set; } = RELOC_STATE.RUNNING;
+
+        /// <summary>
+        /// 0 = FAILED(定位失敗), 
+        /// 1 = SUCCESS(定位正確),
+        /// 2 = RELOCING(正在重定位), 
+        /// 3 = COMPLETED(定位完成
+        /// </summary>
+        public int reloc_status { get; set; }
     }
 }

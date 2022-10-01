@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace GangHaoAGV.AGV
 {
-    public class clsControl : ITcpHandshakeAble
+    public class clsControl : IStateFetchAble, ITcpHandshakeAble
     {
         public agvTcpClient conn { get; set; }
-        public API.RobotStateAPI StateAPI { get; }
+        public API.RobotStateAPI StateAPI { get; set; }
         public API.RobotControlAPI ControlAPI { get; }
 
         public clsControl(agvTcpClient conn, API.RobotStateAPI StateAPI)
@@ -38,7 +38,7 @@ namespace GangHaoAGV.AGV
         /// <returns></returns>
         private async Task WaitRelocComplete()
         {
-            while ((await StateAPI.GetRelocState()).state == Models.StateModels.Responses.robotStatusRelocRes_11021.RELOC_STATE.RUNNING)
+            while ((await StateAPI.GetRelocState()).reloc_status == (int)Models.StateModels.Responses.robotStatusRelocRes_11021.RELOC_STATE.RELOCING)
             {
                 await Task.Delay(TimeSpan.FromSeconds(1));
             }

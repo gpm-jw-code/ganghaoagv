@@ -1,10 +1,12 @@
 ﻿using GangHaoAGV.Communiation;
 using GangHaoAGV.Models;
+using GangHaoAGV.Models.MapModels.Requests;
 using GangHaoAGV.Models.StateModels.Requests;
 using GangHaoAGV.Models.StateModels.Responses;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,98 +21,162 @@ namespace GangHaoAGV.API
             apiType = Enums.API_TYPE.ROBOT_STATE;
         }
 
-
+        public async Task<string> GetStateJsonResponse(ushort cmbNo, object reqData = null, bool saveAsJsonFile = false)
+        {
+            byte[] apiData = reqData == null ? CreateAPICmdBytes(1, cmbNo) : CreateAPICmdBytes(1, reqData);
+            agvReturnState revState = await APIExcute(apiData, cmbNo, useNewConnection: true);
+            if (!revState.isReviced)
+            {
+                return JsonConvert.SerializeObject(new ResModelBase(cmbNo) { acturallyRecieved = false });
+            }
+            if (saveAsJsonFile)
+            {
+                string folder = Path.Combine(Environment.CurrentDirectory, "GangHaoAPITest");
+                Directory.CreateDirectory(folder);
+                string filePath = Path.Combine(folder, $"{cmbNo + 10000}.json");
+                File.WriteAllText(filePath, revState.dataJson);
+            }
+            return revState.dataJson == "null" ? JsonConvert.SerializeObject(new ResModelBase(cmbNo) { acturallyRecieved = false }) : revState.dataJson;
+        }
 
         public async Task<robotStatusInfoRes_11000> GetRobotStatusInfo()
         {
-            agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, 1000));
-            if (!revState.isReviced)
-            {
-                return new robotStatusInfoRes_11000() { acturallyRecieved = false, conection_connected_inner = !revState.disconnected };
-            }
-
-            return JsonConvert.DeserializeObject<robotStatusInfoRes_11000>(revState.dataJson);
+            string json = await GetStateJsonResponse(1000);
+            var objectRet = JsonConvert.DeserializeObject<robotStatusInfoRes_11000>(json);
+            objectRet.json_reply = json;
+            return objectRet;
         }
 
+        /// <summary>
+        /// 1020請求 robot_status_task_req
+        /// </summary>
+        /// <returns>robotStatusRelocRes_11020</returns>
+        public async Task<robotStatusTaskRes_11020> GetRobotStatusTask()
+        {
+            string json = await GetStateJsonResponse(1020);
+            var objectRet = JsonConvert.DeserializeObject<robotStatusTaskRes_11020>(json);
+            objectRet.json_reply = json;
+            return objectRet;
+        }
 
         public async Task<robotStatusRunRes_11002> GetRobotStatusRun()
         {
-            agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, 1002));
-            if (!revState.isReviced)
-                return new robotStatusRunRes_11002() { acturallyRecieved = false };
-            return JsonConvert.DeserializeObject<robotStatusRunRes_11002>(revState.dataJson);
+            string json = await GetStateJsonResponse(1002);
+            var objectRet = JsonConvert.DeserializeObject<robotStatusRunRes_11002>(json);
+            objectRet.json_reply = json;
+            return objectRet;
         }
 
 
         public async Task<robotStatusLocRes_11004> GetRobotLocation()
         {
-            agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, 1004));
-            if (!revState.isReviced)
-                return new robotStatusLocRes_11004() { acturallyRecieved = false };
-            return JsonConvert.DeserializeObject<robotStatusLocRes_11004>(revState.dataJson);
+            string json = await GetStateJsonResponse(1004);
+            var objectRet = JsonConvert.DeserializeObject<robotStatusLocRes_11004>(json);
+            objectRet.json_reply = json;
+            return objectRet;
         }
 
 
         public async Task<robotStatusSpeedRes_11005> GetRobotSpeed()
         {
-            agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, 1005));
-            if (!revState.isReviced)
-                return new robotStatusSpeedRes_11005() { acturallyRecieved = false };
-            return JsonConvert.DeserializeObject<robotStatusSpeedRes_11005>(revState.dataJson);
+            string json = await GetStateJsonResponse(1005);
+            var objectRet = JsonConvert.DeserializeObject<robotStatusSpeedRes_11005>(json);
+            objectRet.json_reply = json;
+            return objectRet;
         }
 
         public async Task<robotStatusBlockRes_11006> GetRobotBlock()
         {
-            agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, 1006));
-            if (!revState.isReviced)
-                return new robotStatusBlockRes_11006() { acturallyRecieved = false };
-            return JsonConvert.DeserializeObject<robotStatusBlockRes_11006>(revState.dataJson);
+            string json = await GetStateJsonResponse(1006);
+            var objectRet = JsonConvert.DeserializeObject<robotStatusBlockRes_11006>(json);
+            objectRet.json_reply = json;
+            return objectRet;
         }
 
 
         public async Task<robotStatusBatteryRes_11007> GetRobotBattery()
         {
-            agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, 1007));
-            if (!revState.isReviced)
-                return new robotStatusBatteryRes_11007() { acturallyRecieved = false };
-            return JsonConvert.DeserializeObject<robotStatusBatteryRes_11007>(revState.dataJson);
+            string json = await GetStateJsonResponse(1007);
+            var objectRet = JsonConvert.DeserializeObject<robotStatusBatteryRes_11007>(json);
+            objectRet.json_reply = json;
+            return objectRet;
         }
 
         public async Task<robotStatusLaserRes_11009> GetRobotLaser()
         {
-            agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, 1009));
-            if (!revState.isReviced)
-                return new robotStatusLaserRes_11009() { acturallyRecieved = false };
-            return JsonConvert.DeserializeObject<robotStatusLaserRes_11009>(revState.dataJson);
+            string json = await GetStateJsonResponse(1009);
+            var objectRet = JsonConvert.DeserializeObject<robotStatusLaserRes_11009>(json);
+            objectRet.json_reply = json;
+            return objectRet;
         }
         public async Task<robotStatusPathRes_11010> GetRobotPath()
         {
-            agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, 1010));
-            if (!revState.isReviced)
-                return new robotStatusPathRes_11010() { acturallyRecieved = false };
-            return JsonConvert.DeserializeObject<robotStatusPathRes_11010>(revState.dataJson);
+            string json = await GetStateJsonResponse(1010);
+            var objectRet = JsonConvert.DeserializeObject<robotStatusPathRes_11010>(json);
+            objectRet.json_reply = json;
+            return objectRet;
         }
 
-
-        public async Task<robotStatusTaskStatusPackageRes_11110> GetTaskStatusPackage()
+        public async Task<robotStatusAlarmRes_11050> GetAlarms()
         {
-            agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, 1110));
-            if (!revState.isReviced)
-                return new robotStatusTaskStatusPackageRes_11110() { acturallyRecieved = false };
-            return JsonConvert.DeserializeObject<robotStatusTaskStatusPackageRes_11110>(revState.dataJson);
+            string json = await GetStateJsonResponse(1050);
+            var objectRet = JsonConvert.DeserializeObject<robotStatusAlarmRes_11050>(json);
+            objectRet.json_reply = json;
+            return objectRet;
+        }
+
+        /// <summary>
+        /// [1110] 查詢機器人任務狀態 (robot_status_task_status_package_req)
+        /// </summary>
+        /// <returns></returns>
+        public async Task<robotStatusTaskStatusPackageRes_11110> GetTaskStatusPackage(string[] task_ids = null)
+        {
+            robotStatusTaskStatusPackageReq_1110 req = new robotStatusTaskStatusPackageReq_1110()
+            {
+                task_ids = task_ids == null ? new string[] { } : task_ids
+            };
+            string json = await GetStateJsonResponse(1110, req);
+            var objectRet = JsonConvert.DeserializeObject<robotStatusTaskStatusPackageRes_11110>(json);
+            objectRet.json_reply = json;
+            return objectRet;
         }
 
 
         /// <summary>
-        /// 取得目前重定位的狀態
+        /// [1021] 取得目前重定位的狀態
         /// </summary>
         /// <returns></returns>
         public async Task<robotStatusRelocRes_11021> GetRelocState()
         {
-            agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, 1021));
-            if (!revState.isReviced)
-                return new robotStatusRelocRes_11021() { acturallyRecieved = false };
-            return JsonConvert.DeserializeObject<robotStatusRelocRes_11021>(revState.dataJson);
+            string json = await GetStateJsonResponse(1021);
+            var objectRet = JsonConvert.DeserializeObject<robotStatusRelocRes_11021>(json);
+            objectRet.json_reply = json;
+            return objectRet;
+        }
+
+
+        /// <summary>
+        ///  [1301] 查詢機器人當前載入地圖中的站點資訊 (robot_status_station)
+        /// </summary>
+        /// <returns></returns>
+        public async Task<robotStatusMapRes_11300> GetRobotMaps()
+        {
+            string json = await GetStateJsonResponse(1300);
+            var objectRet = JsonConvert.DeserializeObject<robotStatusMapRes_11300>(json);
+            objectRet.json_reply = json;
+            return objectRet;
+        }
+
+        /// <summary>
+        ///  [1301] 查詢機器人當前載入地圖中的站點資訊 (robot_status_station)
+        /// </summary>
+        /// <returns></returns>
+        public async Task<robotStatusStationRes_11301> GetRobotStations()
+        {
+            string json = await GetStateJsonResponse(1301);
+            var objectRet = JsonConvert.DeserializeObject<robotStatusStationRes_11301>(json);
+            objectRet.json_reply = json;
+            return objectRet;
         }
     }
 }

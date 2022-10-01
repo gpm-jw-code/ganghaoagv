@@ -8,7 +8,12 @@ namespace GangHaoAGV.Models.StateModels.Responses
 {
     public class robotStatusRunRes_11002 : ResModelBase
     {
-        public double runtime { get; set; } = 168.12;
-        public double accrue_miles { get; set; } = 25992.2;
+        public double odo { get; set; }
+        public double today_odo { get; set; }
+        public double time { get; set; }
+        public double total_time { get; set; }
+        public double controller_temp { get; set; }
+        public double controller_humi { get; set; }
+        public double controller_voltage { get; set; }
     }
 }

@@ -24,7 +24,6 @@ namespace GangHaoAGV.Communiation
                 {
                     try
                     {
-
                         return Encoding.ASCII.GetString(agvReturnDatBytes, 16, dataLen);
                     }
                     catch (Exception ex)

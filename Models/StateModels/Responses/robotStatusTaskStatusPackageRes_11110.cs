@@ -7,20 +7,34 @@ using System.Threading.Tasks;
 namespace GangHaoAGV.Models.StateModels.Responses
 {
     /// <summary>
-    /// 機器人任務狀態
+    /// 查詢機器人任務狀態的回應
     /// </summary>
     public class robotStatusTaskStatusPackageRes_11110 : ResModelBase
     {
-        public TaskStatus[] TaskList { get; set; } = new TaskStatus[]
-        {
-             new TaskStatus(){ TaskID="Rack-03", TaskName= "ERack03取料任務"},
-             new TaskStatus(){ TaskID="Bettery-01", TaskName= "回01充電站充電"},
-        };
+        public string closest_target { get; set; }
+        public string source_name { get; set; }
+        public string target_name { get; set; }
+        public double percentage { get; set; }
+        public TaskStatus[] task_status_list { get; set; }
+        public string info { get; set; }
 
         public class TaskStatus
         {
-            public string TaskID { get; set; }
-            public string TaskName { get; set; }
+            public string task_id { get; set; }
+
+            /// <summary>
+            /// 任務狀態
+            ///  StatusNone = 0;
+            ///  Waiting = 1;
+            ///  Running = 2;
+            ///  Suspended = 3;
+            ///  Completed = 4;
+            ///  Failed = 5;
+            ///  Canceled = 6;
+            ///  OverTime = 7;
+            ///  NotFound = 404;
+            /// </summary>
+            public int status { get; set; }
 
         }
 

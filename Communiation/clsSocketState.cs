@@ -12,12 +12,13 @@ namespace GangHaoAGV.Communiation
         public byte[] buffer = new byte[1024];
         public int bufferSize = 1024;
         public Socket socket;
-
+        public agvReturnState dataState;
         public clsSocketState(Socket socketint, int bufferSize = 1024)
         {
             this.socket = socketint;
             this.bufferSize = bufferSize;
             buffer = new byte[bufferSize];
+            dataState = new agvReturnState();
         }
     }
 }
