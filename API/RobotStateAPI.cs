@@ -156,7 +156,7 @@ namespace GangHaoAGV.API
 
 
         /// <summary>
-        ///  [1301] 查詢機器人當前載入地圖中的站點資訊 (robot_status_station)
+        ///  [1300] 查询机器人载入的地图以及储存的地图
         /// </summary>
         /// <returns></returns>
         public async Task<robotStatusMapRes_11300> GetRobotMaps()

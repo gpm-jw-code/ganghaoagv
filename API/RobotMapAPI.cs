@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using GangHaoAGV.Models.MapModels.Requests;
 using GangHaoAGV.Models.MapModels.Responses;
 using Newtonsoft.Json;
+using GangHaoAGV.Models;
 
 namespace GangHaoAGV.API
 {
@@ -17,7 +18,55 @@ namespace GangHaoAGV.API
             apiType = Enums.API_TYPE.ROBOT_MAP;
         }
 
+        public async Task<ResModelBase> PauseNavigate()
+        {
+            try
+            {
+                agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, 3001), useNewConnection: true);
+                if (!revState.isReviced)
+                {
+                    return new ResModelBase(13001) { acturallyRecieved = false, conection_connected_inner = !revState.disconnected };
+                }
 
+                var jsonObj = JsonConvert.DeserializeObject<ResModelBase>(revState.dataJson);
+                jsonObj.NO = 13001;
+                jsonObj.json_reply = revState.dataJson;
+                return jsonObj;
+            }
+            catch (Exception ex)
+            {
+                return new ResModelBase(13001)
+                {
+                    ret_code = 400,
+                    err_msg = ex.Message,
+                };
+            }
+        }
+
+        public async Task<ResModelBase> ResumeNavigate()
+        {
+            try
+            {
+                agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, 3002), useNewConnection: true);
+                if (!revState.isReviced)
+                {
+                    return new ResModelBase(13002) { acturallyRecieved = false, conection_connected_inner = !revState.disconnected };
+                }
+
+                var jsonObj = JsonConvert.DeserializeObject<ResModelBase>(revState.dataJson);
+                jsonObj.NO = 13002;
+                jsonObj.json_reply = revState.dataJson;
+                return jsonObj;
+            }
+            catch (Exception ex)
+            {
+                return new ResModelBase(13002)
+                {
+                    ret_code = 400,
+                    err_msg = ex.Message,
+                };
+            }
+        }
         public async Task<robotMapTaskGoTargetRes_13051> GoTarget(robotMapTaskGoTargetReq_3051 task)
         {
             try

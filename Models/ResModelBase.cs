@@ -10,7 +10,7 @@ namespace GangHaoAGV.Models
     {
         public int ret_code { get; set; }
         public string create_on { get; set; }
-        public string err_msg { get; set; }
+        public string err_msg { get; set; } = "";
         public string json_reply { get; set; }
         public bool conection_connected_inner { get; set; } = true;
 
