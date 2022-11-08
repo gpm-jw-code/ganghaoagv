@@ -22,7 +22,7 @@ namespace GangHaoAGV.API
         {
             try
             {
-                agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, 3001), useNewConnection: true);
+                agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, 3001));
                 if (!revState.isReviced)
                 {
                     return new ResModelBase(13001) { acturallyRecieved = false, conection_connected_inner = !revState.disconnected };
@@ -47,7 +47,7 @@ namespace GangHaoAGV.API
         {
             try
             {
-                agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, 3002), useNewConnection: true);
+                agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, 3002));
                 if (!revState.isReviced)
                 {
                     return new ResModelBase(13002) { acturallyRecieved = false, conection_connected_inner = !revState.disconnected };
@@ -71,7 +71,7 @@ namespace GangHaoAGV.API
         {
             try
             {
-                agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, task), useNewConnection: true);
+                agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, task));
 
                 if (!revState.isReviced)
                 {
@@ -96,12 +96,16 @@ namespace GangHaoAGV.API
             }
 
         }
-
+        /// <summary>
+        /// 获取路径导航的路径
+        /// </summary>
+        /// <param name="targetID">目标站点的 id	</param>
+        /// <returns></returns>
         internal async Task<robotMapTargetPathRes_13053> GetPath(string targetID)
         {
             try
             {
-                agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, new robotMapTargetPathReq_3053(targetID)), useNewConnection: true);
+                agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, new robotMapTargetPathReq_3053(targetID)));
 
                 if (!revState.isReviced)
                 {
@@ -130,7 +134,7 @@ namespace GangHaoAGV.API
         {
             try
             {
-                agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, req), useNewConnection: true);
+                agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, req));
 
                 if (!revState.isReviced)
                 {
@@ -155,7 +159,7 @@ namespace GangHaoAGV.API
 
         public async Task<robotMapTaskGoTargetRes_13003> TaskCancel()
         {
-            agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, 3003), useNewConnection: true);
+            agvReturnState revState = await APIExcute(CreateAPICmdBytes(1, 3003));
             if (revState.isReviced)
             {
                 var jsonObj = JsonConvert.DeserializeObject<robotMapTaskGoTargetRes_13003>(revState.dataJson);

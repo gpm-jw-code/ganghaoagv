@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -86,11 +87,11 @@
     <Compile Include="API\RobotControlAPI.cs" />
     <Compile Include="API\RobotMapAPI.cs" />
     <Compile Include="API\RobotStateAPI.cs" />
-    <Compile Include="Class1.cs" />
     <Compile Include="Communiation\agvReturnState.cs" />
     <Compile Include="Communiation\agvTcpClient.cs" />
     <Compile Include="Communiation\clsSocketState.cs" />
     <Compile Include="Models\AGVModels\ConectionModel.cs" />
+    <Compile Include="Models\ControlModels\Requests\robotControlRelocReq_2002.cs" />
     <Compile Include="Models\ControlModels\Responses\robotControlConfirmlocRes_12003.cs" />
     <Compile Include="Models\ControlModels\Responses\robotControlRelocRes_12002.cs" />
     <Compile Include="Models\MapModels\Requests\robotMapTargetPathReq_3053.cs" />
@@ -122,9 +123,7 @@
     <Compile Include="Models\TestModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\ControlModels\Requests\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />

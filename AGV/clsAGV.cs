@@ -62,8 +62,8 @@ namespace GangHaoAGV.AGV
             STATES = new clsSTATES(stateConnection, autoFetchStateData);
             STATES.OnConnected += STATES_OnConnected;
             STATES.OnDisConnected += STATES_OnDisConnected;
-            CONTROL = new clsControl(controlConnection, STATES.API);
-            NAVIGATIOR = new clsMap(mapConnection, STATES.API);
+            CONTROL = new clsControl(controlConnection, STATES);
+            NAVIGATIOR = new clsMap(mapConnection, STATES);
         }
 
         private void STATES_OnDisConnected(object sender, EventArgs e)

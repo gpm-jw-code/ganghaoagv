@@ -24,7 +24,7 @@ namespace GangHaoAGV.API
         public async Task<string> GetStateJsonResponse(ushort cmbNo, object reqData = null, bool saveAsJsonFile = false)
         {
             byte[] apiData = reqData == null ? CreateAPICmdBytes(1, cmbNo) : CreateAPICmdBytes(1, reqData);
-            agvReturnState revState = await APIExcute(apiData, cmbNo, useNewConnection: true);
+            agvReturnState revState = await APIExcute(apiData, cmbNo);
             if (!revState.isReviced)
             {
                 return JsonConvert.SerializeObject(new ResModelBase(cmbNo) { acturallyRecieved = false });
@@ -42,9 +42,18 @@ namespace GangHaoAGV.API
         public async Task<robotStatusInfoRes_11000> GetRobotStatusInfo()
         {
             string json = await GetStateJsonResponse(1000);
-            var objectRet = JsonConvert.DeserializeObject<robotStatusInfoRes_11000>(json);
-            objectRet.json_reply = json;
-            return objectRet;
+            try
+            {
+
+                var objectRet = JsonConvert.DeserializeObject<robotStatusInfoRes_11000>(json);
+                objectRet.json_reply = json;
+                return objectRet;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
         }
 
         /// <summary>

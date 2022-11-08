@@ -32,7 +32,7 @@ namespace GangHaoAGV.Models.StateModels.Responses
         public string MAC { get; set; }
         public string echoid_type { get; set; }
         public string echoid { get; set; }
-        public Features features { get; set; } //TODO Confirm object member type
+        public Features[] features { get; set; } //TODO Confirm object member type
 
         public class Features
         {

@@ -16,6 +16,7 @@ namespace GangHaoAGV.AGV
         public API.RobotStateAPI API;
         public Communiation.agvTcpClient conn { get; set; }
         private bool reconnectingFlag = false;
+        public bool stateFetching { get; private set; } = false;
         internal event EventHandler OnConnected;
         internal event EventHandler OnDisConnected;
         public clsSTATES(Communiation.agvTcpClient conn, bool autoFetchStateData)
@@ -26,7 +27,7 @@ namespace GangHaoAGV.AGV
             API = new API.RobotStateAPI(conn);
 
             if (autoFetchStateData)
-                StateFetchWork();
+                StartStatesDataSync();
 
             if (!this.conn.connected)
                 ReconnectWork();
@@ -41,8 +42,7 @@ namespace GangHaoAGV.AGV
         public robotStatusStationRes_11301 stationLoadInfo { get; private set; } = new robotStatusStationRes_11301();
 
         public robotStatusAlarmRes_11050 alarms { get; private set; } = new robotStatusAlarmRes_11050();
-
-
+        public robotStatusTaskRes_11020 navi_task_state { get; private set; } = new robotStatusTaskRes_11020();
         /// <summary>
         /// 重定位狀態
         /// </summary>
@@ -57,52 +57,78 @@ namespace GangHaoAGV.AGV
                     {"robot_status_info-1000", statinfo},
                     {"robot_status_loc-1004", locationInfo},
                     {"robot_status_battery-1007", betteryState},
+                    {"robot_status_task_11020", navi_task_state},
                     {"robot_status_reloc-1021", relocState},
                     {"robot_status_task_status_package-1110", taskStatusPakage},
                     {"robot_status_map-1300", mapLoadInfo},
                     {"robot_status_station-1301", stationLoadInfo},
+                    {"robot_status_alarms_11050", alarms},
                 };
                 return nativeData;
             }
         }
 
-        private async Task StateFetchWork()
+        public async Task StartStatesDataSync()
         {
-            while (true)
-            {
-                await Task.Delay(150);
-                if (!conn.connected)
-                    continue;
-                string fetch_item = "GetRobotStatusInfo";
-                try
-                {
-                    statinfo = await API.GetRobotStatusInfo();
-                    await Task.Delay(150);
-                    fetch_item = "GetRobotBattery";
-                    betteryState = await API.GetRobotBattery();
-                    await Task.Delay(150);
-                    fetch_item = "GetTaskStatusPackage";
-                    taskStatusPakage = await API.GetTaskStatusPackage();
-                    await Task.Delay(150);
-                    fetch_item = "GetRobotLocation";
-                    locationInfo = await API.GetRobotLocation();
-                    await Task.Delay(150);
-                    fetch_item = "GetRobotMaps";
-                    mapLoadInfo = await API.GetRobotMaps();
-                    await Task.Delay(150);
-                    fetch_item = "GetRobotStations";
-                    stationLoadInfo = await API.GetRobotStations();
-                    await Task.Delay(150);
-                    fetch_item = "GetAlarms";
-                    alarms = await API.GetAlarms();
+            StateFetchsWork();
 
-                }
-                catch (Exception ex)
+        }
+        public string currentTaskid { get; set; } = null;
+        private async Task StateFetchsWork()
+        {
+            _ = Task.Run(() =>
+            {
+
+                while (true)
                 {
-                    Console.WriteLine("StateFetchWork({4}) ERROR! {0}:{1} \r\n{2} \r\n{3}", conn.host, conn.port, ex.StackTrace, ex.Message, fetch_item);
-                    continue;
+                    stateFetching = true;
+                    Thread.Sleep(150);
+                    if (!conn.connected)
+                        continue;
+                    string fetch_item = "GetRobotStatusInfo";
+                    try
+                    {
+                        relocState = API.GetRelocState().Result;
+                        Thread.Sleep(150);
+                        statinfo = API.GetRobotStatusInfo().Result;
+                        Thread.Sleep(150);
+                        fetch_item = "GetRobotBattery";
+                        betteryState = API.GetRobotBattery().Result;
+                        Thread.Sleep(150);
+
+
+                        fetch_item = "GetTaskStatusPackage";
+
+                        if (currentTaskid != null)
+                            taskStatusPakage = API.GetTaskStatusPackage(new string[] { currentTaskid }).Result;
+                        else
+                            taskStatusPakage = API.GetTaskStatusPackage().Result;
+
+                        Thread.Sleep(150);
+                        fetch_item = "GetRobotLocation";
+                        locationInfo = API.GetRobotLocation().Result;
+                        Thread.Sleep(150);
+                        fetch_item = "GetRobotMaps";
+                        mapLoadInfo = API.GetRobotMaps().Result;
+                        Thread.Sleep(150);
+                        fetch_item = "GetRobotStations";
+                        stationLoadInfo = API.GetRobotStations().Result;
+                        Thread.Sleep(150);
+                        fetch_item = "GetAlarms";
+                        alarms = API.GetAlarms().Result;
+                        Thread.Sleep(150);
+                        fetch_item = "navi_task_state";
+                        navi_task_state = API.GetRobotStatusTask().Result;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("StateFetchWork({4}) ERROR! {0}:{1} \r\n{2} \r\n{3}", conn.host, conn.port, ex.StackTrace, ex.Message, fetch_item);
+                        throw ex;
+                    }
                 }
-            }
+
+            });
         }
 
         /// <summary>

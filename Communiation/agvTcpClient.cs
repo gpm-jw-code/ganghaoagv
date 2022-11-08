@@ -33,12 +33,14 @@ namespace GangHaoAGV.Communiation
                 tcpSocket.ReceiveBufferSize = 163840;
                 tcpSocket.Connect(host, port);
                 connected = true;
+                Console.WriteLine($"{host}:{port} Connected");
                 return true;
             }
             catch (Exception ex)
             {
                 errMsg = ex.Message;
                 connected = false;
+                Console.WriteLine($"{host}:{port} Connect Fail:{errMsg}");
                 return false;
             }
         }
@@ -98,9 +100,8 @@ namespace GangHaoAGV.Communiation
                     {
 
                     }
-                    byte[] RevBytes = new byte[totalLen];
-                    Array.Copy(state.buffer, 0, RevBytes, 0, totalLen);
-                    state.dataState.agvReturnDatBytes = RevBytes;
+                    
+                    state.dataState.agvReturnDatBytes = new ArraySegment<byte>(state.buffer, 0, totalLen).ToArray();
                     state.dataState.dataLen = dataLen;
                     waitRevDoneCTSK.Cancel();
                 }
@@ -126,7 +127,7 @@ namespace GangHaoAGV.Communiation
         {
             try
             {
-                tcpSocket.Shutdown(SocketShutdown.Both);
+                tcpSocket.Disconnect(false);
                 tcpSocket.Close();
                 tcpSocket.Dispose();
             }

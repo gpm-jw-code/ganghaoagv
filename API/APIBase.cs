@@ -94,28 +94,28 @@ namespace GangHaoAGV.API
         /// </summary>
         /// <param name="conn">通訊物件</param>
         /// <param name="apiContextBytes">API報文</param>
-        public async Task<agvReturnState> APIExcute(byte[] apiContextBytes, int cmdNoMark = -1, bool useNewConnection = false)
+        public async Task<agvReturnState> APIExcute(byte[] apiContextBytes, int cmdNoMark = -1)
         {
-            if (useNewConnection)
-            {
-                var agvTcpClient = new agvTcpClient(_agvTcpClient.host, _agvTcpClient.port);
-                bool connected = agvTcpClient.TryConnect(out string errmsg);
-                if (connected)
-                {
-                    var response = await agvTcpClient.Send(apiContextBytes, cmdNoMark);
-                    agvTcpClient.Close();
-                    return response;
-                }
-                else
-                    return new agvReturnState { };
-            }
-            else
-            {
+            //if (useNewConnection)
+            //{
+            //    var agvTcpClient = new agvTcpClient(_agvTcpClient.host, _agvTcpClient.port);
+            //    bool connected = agvTcpClient.TryConnect(out string errmsg);
+            //    if (connected)
+            //    {
+            //        var response = await agvTcpClient.Send(apiContextBytes, cmdNoMark);
+            //        agvTcpClient.Close();
+            //        return response;
+            //    }
+            //    else
+            //        return new agvReturnState { };
+            //}
+            //else
+            //{
 
-                if (_agvTcpClient == null)
-                    throw new NotImplementedException("連線尚未實作");
-                return await _agvTcpClient.Send(apiContextBytes, cmdNoMark);
-            }
+            if (_agvTcpClient == null)
+                throw new NotImplementedException("連線尚未實作");
+            return await _agvTcpClient.Send(apiContextBytes, cmdNoMark);
+            //}
         }
 
         public Object DeserializeObject(agvReturnState agvReturn)

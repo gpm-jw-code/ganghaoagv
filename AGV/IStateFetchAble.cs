@@ -8,6 +8,6 @@ namespace GangHaoAGV.AGV
 {
     public interface IStateFetchAble
     {
-        API.RobotStateAPI StateAPI { get; set; }
+        clsSTATES State { get; set; }
     }
 }

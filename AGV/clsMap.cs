@@ -55,7 +55,7 @@ namespace GangHaoAGV.AGV
 
         public API.RobotMapAPI mapAPI;
 
-        public clsMap(agvTcpClient conn, RobotStateAPI StateAPI) : base(conn, StateAPI)
+        public clsMap(agvTcpClient conn, clsSTATES State) : base(conn, State)
         {
             mapAPI = new RobotMapAPI(this.conn);
         }
@@ -117,56 +117,6 @@ namespace GangHaoAGV.AGV
         /// </summary>
         /// <param name="taskList"></param>
         /// <returns></returns>
-        public async Task<NavigateReqResult> GoTargets(robotMapTaskGoTargetListReq_3066 task_3066)
-        {
-            //TODO 任務完成確認
-            //await WaitNavigatTaskFinish();
-
-            return await Task.Run(async () =>
-             {
-                 mapAPI.GoTargetList(task_3066);
-                 Console.WriteLine($"導航結束({task_3066.move_task_list.Count}個站點)");
-                 return new NavigateReqResult { Success = true, ErrMsg = "" };
-             });
-        }
-
-        /// <summary>
-        /// 呼叫api req 1020確認導航完成
-        /// </summary>
-        /// <returns></returns>
-        private async Task WaitTaskFinish(robotMapTaskGoTargetReq_3051 task, CancellationTokenSource waitCn)
-        {
-            await Task.Delay(TimeSpan.FromSeconds(3));
-
-            _ = Task.Run(async () =>
-            {
-                while (!waitCn.IsCancellationRequested)
-                {
-                    Console.WriteLine($"等待導航結束...(taskID:{task.task_id} / 初始點位:{task.source_id} /目標點位:{task.id})");
-                    await Task.Delay(TimeSpan.FromSeconds(1));
-                }
-
-            }, waitCn.Token);
-
-            bool isNavigating = true;
-            while (isNavigating)
-            {
-                await Task.Delay(TimeSpan.FromMilliseconds(1000));
-                var naviState = await StateAPI.GetRobotStatusTask();
-                Console.WriteLine(JsonConvert.SerializeObject(naviState, Formatting.Indented));
-                isNavigating = naviState.task_status == 2;
-            }
-            waitCn.Cancel();
-        }
-
-        private async Task WaitNavigatTaskFinish()
-        {
-            while ((await StateAPI.GetRobotStatusTask()).isNavigating)
-            {
-                await Task.Delay(TimeSpan.FromMilliseconds(300));
-            }
-
-        }
 
         public async Task PauseNavigate()
         {
